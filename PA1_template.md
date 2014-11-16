@@ -1,13 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Libraries
-```{r}
+
+```r
 library(data.table)
 library(ggplot2)
 library(plyr)
@@ -15,8 +11,8 @@ library(plyr)
    
 ## Loading and preprocessing the data
 
-```{r, results='hide'}
 
+```r
 dt <- fread("activity.csv", colClasses = "character")
 
 ##Removing NA's
@@ -31,23 +27,39 @@ dtaux[, meanstepsperinterval := mean(as.numeric(steps), na.rm = TRUE), by = inte
 
 ###1. Histogram of the total number of steps taken each day
 
-```{r}
+
+```r
 ## histogram of the total number of steps taken each day
 hist(dtaux[,totalstepsperday], main="Total number of steps taken each day", xlab="5-minute interval", ylab="Total steps per day")
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
 ###2. The mean and median total number of steps taken per day
 
-```{r}
+
+```r
 print(mean(dtaux[,totalstepsperday])) #Mean
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 print(median(dtaux[,totalstepsperday])) #Median
+```
+
+```
+## [1] 10765
 ```
    
 ##What is the average daily activity pattern?
 
 ###1. Plot Interval vs mean
 
-```{r}
+
+```r
 p <- ggplot(dtaux, aes(x=as.numeric(interval), y=meanstepsperinterval, group=1)) +
         geom_line() +
         labs(title = "Average number of steps taken across all days") +
@@ -56,12 +68,18 @@ p <- ggplot(dtaux, aes(x=as.numeric(interval), y=meanstepsperinterval, group=1))
 print(p)
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
 ###2. The 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps
 
-```{r}
+
+```r
 maxmeanvalue <- max(dtaux[,meanstepsperinterval])
 print(dtaux[meanstepsperinterval==maxmeanvalue, interval][[1]])
-        
+```
+
+```
+## [1] "835"
 ```
 
 
@@ -70,18 +88,19 @@ print(dtaux[meanstepsperinterval==maxmeanvalue, interval][[1]])
 
 ###1. Number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r}
+
+```r
 narows <- nrow(dt[!complete.cases(dt),])
 ```
 
-The total number of rows with NAs is `r narows`
+The total number of rows with NAs is 2304
 
 ###2. Strategy for filling in all of the missing values  
 Replace the NA's values with the mean by interval
 
 ###3. New dataset that is equal to the original dataset but with the missing data filled in.
-```{r, results='hide'}
 
+```r
 ## Create a new dataset
 newdt <- dt
 
@@ -96,29 +115,43 @@ newdt[is.na(steps), steps := meanstepsperinterval]
 
 ##Calculate for the new dataset
 newdt[, totalstepsperday := sum(steps), by = date] #Total
-
 ```
 
 ###4. Histogram of the total number of steps taken each day
 
-```{r}
+
+```r
 ## histogram of the total number of steps taken each day
 hist(newdt[,totalstepsperday], main="Total number of steps taken each day", xlab="5-minute interval", ylab="Total steps per day")
 ```
 
+![](./PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
+
 ####4.1 The mean and median total number of steps taken per day
-```{r}
+
+```r
 meandifference <- mean(newdt[,totalstepsperday]) - mean(dtaux[,totalstepsperday]) #Mean
 mediandifference <- median(newdt[,totalstepsperday]) - median(dtaux[,totalstepsperday]) #Median
 
 print(mean(newdt[,totalstepsperday])) #Mean
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 print(median(newdt[,totalstepsperday])) #Median
+```
+
+```
+## [1] 10766.19
 ```
 
 ####4.2 Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-Difference between Mean: `r meandifference`  
-Difference between Median: `r mediandifference`  
+Difference between Mean: 0  
+Difference between Median: 1.1886792  
   
 There was an increase of the total on the histogram  
   
@@ -126,7 +159,8 @@ There was an increase of the total on the histogram
 ##Are there differences in activity patterns between weekdays and weekends?
 ###1. Create a new factor variable
 
-```{r, results='hide'}
+
+```r
 ##I didn't do a factor, but I put the values directly
 newdt[, datenumber := as.POSIXlt(as.Date(date))$wday ]
 newdt[datenumber %in% c(6,0), dateaux := "weekend"]
@@ -146,7 +180,8 @@ newdt[, totalstepsperday := sum(steps), by = date] #Total
 
 ###2. Plot Interval vs mean (Weekdays and Weekends)
 
-```{r}
+
+```r
 p <- ggplot(newdt, aes(x=as.numeric(interval), y=meanstepsperinterval, group=1)) +
         geom_line() +
         labs(title = "Average number of steps taken across all days") +
@@ -155,3 +190,5 @@ p <- ggplot(newdt, aes(x=as.numeric(interval), y=meanstepsperinterval, group=1))
          
 print(p)
 ```
+
+![](./PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
