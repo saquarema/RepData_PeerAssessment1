@@ -5,6 +5,13 @@
 
 ```r
 library(data.table)
+```
+
+```
+## Warning: package 'data.table' was built under R version 3.1.2
+```
+
+```r
 library(ggplot2)
 library(plyr)
 ```
@@ -23,14 +30,14 @@ dtaux[, totalstepsperday := sum(as.numeric(steps), na.rm = TRUE), by = date] #To
 dtaux[, meanstepsperinterval := mean(as.numeric(steps), na.rm = TRUE), by = interval] #Mean
 ```
    
-##What is mean total number of steps taken per day?
+##What is mean total number of steps taken per day? 
 
 ###1. Histogram of the total number of steps taken each day
 
 
 ```r
 ## histogram of the total number of steps taken each day
-hist(dtaux[,totalstepsperday], main="Total number of steps taken each day", xlab="5-minute interval", ylab="Total steps per day")
+hist(dtaux[,totalstepsperday], main="Total number of steps taken each day", xlab="Total steps per day", ylab="Frequency")
 ```
 
 ![](./PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
@@ -122,7 +129,7 @@ newdt[, totalstepsperday := sum(steps), by = date] #Total
 
 ```r
 ## histogram of the total number of steps taken each day
-hist(newdt[,totalstepsperday], main="Total number of steps taken each day", xlab="5-minute interval", ylab="Total steps per day")
+hist(newdt[,totalstepsperday], main="Total number of steps taken each day", xlab="Total steps per day", ylab="Frequency")
 ```
 
 ![](./PA1_template_files/figure-html/unnamed-chunk-9-1.png) 
